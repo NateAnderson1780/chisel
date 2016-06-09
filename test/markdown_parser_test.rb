@@ -43,6 +43,7 @@ class MarkdownParserTest < Minitest::Test
   end
 
   def test_paragraphs_with_multiple_new_lines
+    skip
     input = "first\n\n\nsecond"
 
     markdown = MarkdownParser.new(input)
@@ -51,7 +52,7 @@ class MarkdownParserTest < Minitest::Test
   end
 
   def test_can_parse_a_single_header
-    skip
+
     markdown = MarkdownParser.new("## Here's an H2")
 
     assert_equal "<h2>Here's an H2</h2>", markdown.convert_to_html

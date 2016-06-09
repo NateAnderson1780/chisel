@@ -48,11 +48,34 @@ class MarkdownParser
     #   newline_deleted.insert(0, "<p>").insert(-1, "</p>")
     # end
 
-    new_input_array = @input.split(/\n\n/)
+    new_input_array = @input.split("\n\n")
     output = new_input_array.map do |line|
-       line.insert(0, "<p>").insert(-1, "</p>").gsub("\n", " ")
+      if line[0] != "#"
+       create_paragraph(line)
+      elsif line[0] = "#"
+        if line.include?("\n")
+          binding.pry
+          new_line = line.split("\n")
+          a = create_header(new_line[0])
+          b = create_paragraph(new_line[1])
 
+
+        else
+          create_header(line)
+        end
+      end
     end
     output.join("\n")
+  end
+
+  def create_paragraph(line)
+    line.insert(0, "<p>").insert(-1, "</p>").gsub("\n", " ")
+  end
+
+  def create_header(line)
+    hash_count = line.count("#")
+    remove_hashes = line.gsub("#", "")
+    remove_lead_space = remove_hashes.sub(" ", "")
+    headers = remove_lead_space.insert(0, "<h#{hash_count}>").insert(-1, "</h#{hash_count}>")
   end
 end
