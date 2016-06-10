@@ -47,19 +47,23 @@ class MarkdownParser
     #   newline_deleted = @input.sub("\n", " ")
     #   newline_deleted.insert(0, "<p>").insert(-1, "</p>")
     # end
+    if @input.include?("\n\n\n")
+      new_input = @input.split.join("\n\n")
+    elsif @input[0] == "#" && @input.include?("\n")
+      new_input = @input.sub("\n", "\n\n")
+    else
+      new_input = @input
+    end
 
-    new_input_array = @input.split("\n\n")
+    new_input_array = new_input.split("\n\n")
     output = new_input_array.map do |line|
       if line[0] != "#"
        create_paragraph(line)
       elsif line[0] = "#"
         if line.include?("\n")
-          binding.pry
           new_line = line.split("\n")
           a = create_header(new_line[0])
           b = create_paragraph(new_line[1])
-
-
         else
           create_header(line)
         end
@@ -69,13 +73,13 @@ class MarkdownParser
   end
 
   def create_paragraph(line)
-    line.insert(0, "<p>").insert(-1, "</p>").gsub("\n", " ")
+    line.insert(0, "<p>").insert(-1, "</p>\n")
   end
 
   def create_header(line)
     hash_count = line.count("#")
     remove_hashes = line.gsub("#", "")
     remove_lead_space = remove_hashes.sub(" ", "")
-    headers = remove_lead_space.insert(0, "<h#{hash_count}>").insert(-1, "</h#{hash_count}>")
+    headers = remove_lead_space.insert(0, "<h#{hash_count}>").insert(-1, "</h#{hash_count}>\n")
   end
 end
