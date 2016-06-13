@@ -1,85 +1,54 @@
 require 'pry'
+require_relative 'header'
+require_relative 'paragraph'
 
 class MarkdownParser
+  attr_accessor :header, :paragraph
   def initialize(input)
     @input = input
+    @header = Header.new
+    @paragraph = Paragraph.new
   end
 
   def convert_to_html
-    # if !@input.include?("\n")
-    #   @input.insert(0, "<p>").insert(-1, "</p>")
-    # # elsif @input.include?("\n")
-    # #   header_count = @input.count("#")
-    # #   remove_hashes = @input.gsub("#", "")
-    # #   front_space_removed = remove_hashes.sub(" ", "")
-    # #   front_space_removed.insert(0, "<h#{header_count}>").insert(-1, "</h#{header_count}>")
-    # elsif @input.include?("\n\n")
-    #   newline_deleted = @input.sub("\n\n", "</p>\n<p>")
-    #   newline_deleted.insert(0, "<p>").insert(-1, "</p>")
-    # # elsif @input.include?("\n")
-    # #   header_count = @input.count("#")
-    #
-    # elsif @input.include?("\n")
-    #   newline_deleted = @input.sub("\n", " ")
-    #   newline_deleted.insert(0, "<p>").insert(-1, "</p>")
-    # new_input_array = @input.split("\n")
-    # binding.pry
-    # new_input_array.each do |line|
-    #   if line[0] == "#"
-    #     hash_count = line.count("#")
-    #     remove_hashes = line.gsub("#", "")
-    #     remove_lead_space = remove_hashes.sub(" ", "")
-    #     headers = remove_lead_space.insert(0, "<h#{hash_count}>").insert(-1, "</h#{hash_count}>")
-    #     binding.pry
-    #     puts headers
-    #   elsif !line[0] == "#" && line.count("\n") == 1
-    #     new_paragraph = @input.insert(0, "<p>").insert(-1, "</p>")
-    #     puts new_paragraph
-    #   end
-
-    # if !@input.include?("\n")
-    #   @input.insert(0, "<p>").insert(-1, "</p>")
-    # elsif @input.include?("\n\n")
+    # if @input.include?("\n\n\n")
+    #   new_input = @input.split.join("\n\n")
     #   binding.pry
-    #   newline_deleted = @input.gsub("\n\n", "</p>\n<p>")
-    #   newline_deleted.insert(0, "<p>").insert(-1, "</p>")
-    # elsif @input.include?("\n")
-    #   newline_deleted = @input.sub("\n", " ")
-    #   newline_deleted.insert(0, "<p>").insert(-1, "</p>")
+    # elsif @input[0] == "#" && @input.include?("\n")
+    #   new_input = @input.sub("\n", "\n\n")
+    # else
+    #   new_input = @input
     # end
-    if @input.include?("\n\n\n")
-      new_input = @input.split.join("\n\n")
-    elsif @input[0] == "#" && @input.include?("\n")
-      new_input = @input.sub("\n", "\n\n")
-    else
-      new_input = @input
-    end
-
-    new_input_array = new_input.split("\n\n")
-    output = new_input_array.map do |line|
-      if line[0] != "#"
-       create_paragraph(line)
-      elsif line[0] = "#"
-        if line.include?("\n")
-          new_line = line.split("\n")
-          a = create_header(new_line[0])
-          b = create_paragraph(new_line[1])
-        else
-          create_header(line)
-        end
+    #
+    # new_input_array = new_input.split("\n\n")
+    # output = new_input_array.map do |line|
+    #   if line[0] != "#"
+    #    paragraph.create_paragraph(line)
+    #   elsif line[0] = "#"
+    #     if line.include?("\n")
+    #       new_line = line.split("\n")
+    #       a = header.create_header(new_line[0])
+    #       b = paragraph.create_paragraph(new_line[1])
+    #     else
+    #       header.create_header(line)
+    #     end
+    #   end
+    # end
+    # output.join("\n")
+    new_input = @input.split("\n")
+    output = new_input.each_cons(3).map do |line, next_line, third_line|
+      if line == ""
+        line.delete("")
+      elsif line[0] == "#"
+        header.create_header(line)
+      elsif next_line == ""
+        paragraph.create_paragraph(line)
+      elsif next_line[0] != "#"
+        new_line = line + "\n" + next_line
+        paragraph.create_paragraph(new_line)
       end
-    end
+      binding.pry
     output.join("\n")
-  end
-
-  def create_paragraph(line)
-    line.insert(0, "<p>").insert(-1, "</p>\n")
-  end
-
-  def create_header(line)
-    hash_count = line.count("#")
-    remove_hashes = line.gsub("#", "")
-    remove_lead_space = remove_hashes.sub(" ", "")
-    headers = remove_lead_space.insert(0, "<h#{hash_count}>").insert(-1, "</h#{hash_count}>\n")
+    end
   end
 end
