@@ -10,14 +10,15 @@ class Bold
       if element.count("*") == 4
         new_element = element.sub("**", "<strong>")
         new_element.sub("**", "</strong>")
-      elsif element.start_with?("**")
-        new_element = element.sub("**", "<strong>")
+      elsif element.start_with?("**") || element.start_with?("<p>**")
+        element.sub("**", "<strong>")
       elsif element.include?("**")
-        new_element = element.sub("**", "</strong>")
+        element.sub("**", "</strong>")
+      elsif element.start_with?("<h")
+        element.insert(-1, "\n\n")
       else
         element
       end
-    end
-    return output.join(" ")
+    end.join(" ")
   end
 end
