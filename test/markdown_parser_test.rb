@@ -42,7 +42,6 @@ class MarkdownParserTest < Minitest::Test
   end
 
   def test_paragraphs_with_multiple_new_lines
-
     input = "first\n\n\nsecond"
 
     markdown = MarkdownParser.new(input)
@@ -66,7 +65,6 @@ class MarkdownParserTest < Minitest::Test
   end
 
   def test_can_parse_header_and_paragraph
-
     input1 = "# Header\nfollowed by text"
     input2 = "<h1>Header</h1>\n\n<p>followed by text</p>\n"
 
@@ -76,7 +74,6 @@ class MarkdownParserTest < Minitest::Test
   end
 
   def test_can_parse_various_header_levels
-
     input1 = "# Header1\n## Header 2\n\n### Header 3\n\n\n#### Header 4"
     input2 = "<h1>Header1</h1>\n\n<h2>Header 2</h2>\n\n<h3>Header 3</h3>\n\n<h4>Header 4</h4>\n"
     markdown = MarkdownParser.new(input1)
@@ -85,9 +82,17 @@ class MarkdownParserTest < Minitest::Test
   end
 
   def test_various_headers_and_paragraphs
-
     input1 = "# Header 1\n\n\nfirst paragraph\n2nd line of first paragraph\n\n\n## Header 2\n\nfirst\n\n\nsecond"
     input2 = "<h1>Header 1</h1>\n\n<p>first paragraph\n2nd line of first paragraph</p>\n\n<h2>Header 2</h2>\n\n<p>first</p>\n\n<p>second</p>\n"
+
+    markdown = MarkdownParser.new(input1)
+
+    assert_equal input2, markdown.convert_to_html
+  end
+
+  def test_sample_code_from_chisel_markdown
+    input1 = "# My Life in Desserts\n\n## Chapter 1: The Beginning\n\n\"You just *have* to try the cheesecake,\" he said. \"Ever since it appeared in\n**Food & Wine** this place has been packed every night.\""
+    input2 = "<h1>My Life in Desserts</h1>\n\n<h2>Chapter 1: The Beginning</h2>\n\n<p>\"You just *have* to try the cheesecake,\" he said. \"Ever since it appeared in\n**Food & Wine** this place has been packed every night.\"</p>"
 
     markdown = MarkdownParser.new(input1)
 

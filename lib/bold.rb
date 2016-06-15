@@ -6,19 +6,12 @@ class Bold
   end
 
   def bold_the_input
-    output = @input.split.map do |element|
-      if element.count("*") == 4
-        new_element = element.sub("**", "<strong>")
-        new_element.sub("**", "</strong>")
-      elsif element.start_with?("**") || element.start_with?("<p>**")
-        element.sub("**", "<strong>")
-      elsif element.include?("**")
-        element.sub("**", "</strong>")
-      elsif element.start_with?("<h")
-        element.insert(-1, "\n\n")
-      else
-        element
-      end
-    end.join(" ")
+    @input.split("\n\n").map do |element|
+        a = element.sub(">**", "><strong>")
+        b = a.sub("**<", "</strong><")
+        c = b.gsub(" **", " <strong>")
+        d = c.gsub("** ", "</strong> ")
+        e = d.gsub("**.", "</strong>.")
+    end.join("\n\n")
   end
 end
