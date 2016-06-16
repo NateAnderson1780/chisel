@@ -13,6 +13,8 @@ class Italic
         c = b.gsub(" *", " <em>")
         d = c.gsub("* ", "</em> ")
         e = d.gsub("*.", "</em>.")
+        f = e.gsub("*,", "</em>,")
+        g= f.gsub("\n*", "\n<em>")
      end.join("\n\n")
   end
 end
